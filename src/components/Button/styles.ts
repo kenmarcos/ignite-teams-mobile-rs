@@ -3,11 +3,11 @@ import styled, { css } from "styled-components/native";
 
 export type ButtonTypeStyleProps = "PRIMARY" | "SECONDARY";
 
-type ContainerProps = {
+type ButtonStyleProps = {
   type: ButtonTypeStyleProps;
 };
 
-export const Container = styled(TouchableOpacity)<ContainerProps>`
+export const Container = styled(TouchableOpacity)<ButtonStyleProps>`
   flex: 1;
   min-height: 56px;
   max-height: 56px;
