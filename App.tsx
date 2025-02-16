@@ -1,5 +1,4 @@
 import { LoadIndicator } from "@/components/Loading/styles";
-import { Groups } from "@/screens/Groups";
 import { theme } from "@/styles/theme";
 import {
   useFonts,
@@ -8,6 +7,7 @@ import {
 } from "@expo-google-fonts/roboto";
 import { ThemeProvider } from "styled-components/native";
 import { StatusBar } from "react-native";
+import { Routes } from "@/routes";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -22,7 +22,7 @@ export default function App() {
         barStyle="light-content"
         backgroundColor="transparent"
       />
-      {fontsLoaded ? <Groups /> : <LoadIndicator />}
+      {fontsLoaded ? <Routes /> : <LoadIndicator />}
     </ThemeProvider>
   );
 }
