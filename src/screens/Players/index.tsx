@@ -9,6 +9,11 @@ import { useState } from "react";
 import { PlayerCard } from "@/components/PlayerCard";
 import { ListEmpty } from "@/components/ListEmpty";
 import { Button } from "@/components/Button";
+import { useRoute } from "@react-navigation/native";
+
+interface RouteParams {
+  group: string;
+}
 
 export const Players = () => {
   const [team, setTeam] = useState("Time A");
@@ -18,6 +23,10 @@ export const Players = () => {
     "Mônica",
     "Pedro",
   ]);
+
+  const route = useRoute();
+
+  const { group } = route.params as RouteParams;
 
   const handleTeamSelect = (team: string) => {
     setTeam(team);
@@ -31,10 +40,7 @@ export const Players = () => {
     <Container>
       <Header />
 
-      <HighLight
-        title="Nome da turma"
-        subtitle="Adicione a galera e separe os times"
-      />
+      <HighLight title={group} subtitle="Adicione a galera e separe os times" />
 
       <Form>
         <Input placeholder="Nome da pessoa" autoCorrect={false} />
