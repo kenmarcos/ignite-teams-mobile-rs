@@ -4,8 +4,8 @@ import { HighLight } from "@/components/HighLight";
 import { ButtonIcon } from "@/components/ButtonIcon";
 import { Input } from "@/components/Input";
 import { Filter } from "@/components/Filter";
-import { Alert, FlatList } from "react-native";
-import { useEffect, useState } from "react";
+import { Alert, FlatList, Keyboard, TextInput } from "react-native";
+import { useEffect, useRef, useState } from "react";
 import { PlayerCard } from "@/components/PlayerCard";
 import { ListEmpty } from "@/components/ListEmpty";
 import { Button } from "@/components/Button";
@@ -23,6 +23,7 @@ export const Players = () => {
   const [team, setTeam] = useState("Time A");
   const [players, setPlayers] = useState<PlayerStorageDTO[]>([]);
   const [newPlayerName, setNewPlayerName] = useState("");
+  const newPlayerNameInputRef = useRef<TextInput>(null);
 
   const route = useRoute();
 
@@ -48,6 +49,10 @@ export const Players = () => {
     try {
       await playerAddByGroup(newPlayer, group);
 
+      newPlayerNameInputRef.current?.blur();
+      Keyboard.dismiss(); // fecha o teclado
+
+      setNewPlayerName("");
       fetchPlayersByTeam();
     } catch (error) {
       if (error instanceof AppError) {
@@ -91,6 +96,10 @@ export const Players = () => {
           placeholder="Nome da pessoa"
           autoCorrect={false}
           onChangeText={setNewPlayerName}
+          value={newPlayerName}
+          inputRef={newPlayerNameInputRef}
+          onSubmitEditing={handleAddPlayer}
+          returnKeyType="done"
         />
         <ButtonIcon icon="add" onPress={handleAddPlayer} />
       </Form>
