@@ -4,12 +4,15 @@ import { HighLight } from "@/components/HighLight";
 import { ButtonIcon } from "@/components/ButtonIcon";
 import { Input } from "@/components/Input";
 import { Filter } from "@/components/Filter";
-import { FlatList } from "react-native";
+import { Alert, FlatList } from "react-native";
 import { useState } from "react";
 import { PlayerCard } from "@/components/PlayerCard";
 import { ListEmpty } from "@/components/ListEmpty";
 import { Button } from "@/components/Button";
 import { useRoute } from "@react-navigation/native";
+import { AppError } from "@/utils/AppError";
+import { playerAddByGroup } from "@/storage/player/playerAddByGroup";
+import { playersGetAllByGroup } from "@/storage/player/playersGetAllByGroup";
 
 interface RouteParams {
   group: string;
@@ -17,12 +20,8 @@ interface RouteParams {
 
 export const Players = () => {
   const [team, setTeam] = useState("Time A");
-  const [players, setPlayers] = useState([
-    "Marcos",
-    "Camila",
-    "Mônica",
-    "Pedro",
-  ]);
+  const [players, setPlayers] = useState([]);
+  const [newPlayerName, setNewPlayerName] = useState("");
 
   const route = useRoute();
 
@@ -32,19 +31,49 @@ export const Players = () => {
     setTeam(team);
   };
 
-  const onRemove = (name: string) => {
-    setPlayers((prevState) => prevState.filter((player) => player !== name));
+  const handleAddPlayer = async () => {
+    if (newPlayerName.trim().length === 0) {
+      return Alert.alert(
+        "Nova Pessoa",
+        "Informe o nome da pessoa para adicionar."
+      );
+    }
+
+    const newPlayer = {
+      name: newPlayerName,
+      team,
+    };
+
+    try {
+      await playerAddByGroup(newPlayer, group);
+
+      const players = await playersGetAllByGroup(group);
+    } catch (error) {
+      if (error instanceof AppError) {
+        Alert.alert("Nova Pessoa", error.message);
+      } else {
+        Alert.alert(
+          "Nova Pessoa",
+          "Não foi possível adicionar uma nova pessoa."
+        );
+        console.log(error);
+      }
+    }
   };
 
   return (
     <Container>
-      <Header />
+      <Header showBackButton />
 
       <HighLight title={group} subtitle="Adicione a galera e separe os times" />
 
       <Form>
-        <Input placeholder="Nome da pessoa" autoCorrect={false} />
-        <ButtonIcon icon="add" />
+        <Input
+          placeholder="Nome da pessoa"
+          autoCorrect={false}
+          onChangeText={setNewPlayerName}
+        />
+        <ButtonIcon icon="add" onPress={handleAddPlayer} />
       </Form>
 
       <HeaderList>
