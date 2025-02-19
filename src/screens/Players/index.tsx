@@ -12,7 +12,8 @@ import { Button } from "@/components/Button";
 import { useRoute } from "@react-navigation/native";
 import { AppError } from "@/utils/AppError";
 import { playerAddByGroup } from "@/storage/player/playerAddByGroup";
-import { playersGetAllByGroup } from "@/storage/player/playersGetAllByGroup";
+import { playersGetByGroupAndTeam } from "@/storage/player/playersGetByGroupAndTeam";
+import { PlayerStorageDTO } from "@/storage/player/PlayerStorageDTO";
 
 interface RouteParams {
   group: string;
@@ -20,7 +21,7 @@ interface RouteParams {
 
 export const Players = () => {
   const [team, setTeam] = useState("Time A");
-  const [players, setPlayers] = useState([]);
+  const [players, setPlayers] = useState<PlayerStorageDTO[]>([]);
   const [newPlayerName, setNewPlayerName] = useState("");
 
   const route = useRoute();
@@ -46,8 +47,6 @@ export const Players = () => {
 
     try {
       await playerAddByGroup(newPlayer, group);
-
-      const players = await playersGetAllByGroup(group);
     } catch (error) {
       if (error instanceof AppError) {
         Alert.alert("Nova Pessoa", error.message);
@@ -58,6 +57,20 @@ export const Players = () => {
         );
         console.log(error);
       }
+    }
+  };
+
+  const fetchPlayersByTeam = async () => {
+    try {
+      const playersByTeam = await playersGetByGroupAndTeam(group, team);
+
+      setPlayers(playersByTeam);
+    } catch (error) {
+      console.log(error);
+      Alert.alert(
+        "Pessoas",
+        "Nao foi possivel carregar as pessoas filtradas do time selecionado."
+      );
     }
   };
 
