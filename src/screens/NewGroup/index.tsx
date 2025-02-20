@@ -5,7 +5,7 @@ import { HighLight } from "@/components/HighLight";
 import { Input } from "@/components/Input";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import { groupCreate } from "@/storage/group/groupCreate";
+import { createGroup } from "@/storage/group/createGroup";
 import { AppError } from "@/utils/AppError";
 import { Alert } from "react-native";
 
@@ -20,7 +20,7 @@ export const NewGroup = () => {
         return Alert.alert("Nova Turma", "Informe o nome do turma.");
       }
 
-      await groupCreate(group);
+      await createGroup(group);
       navigation.navigate("players", { group });
     } catch (error) {
       if (error instanceof AppError) {

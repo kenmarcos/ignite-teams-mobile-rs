@@ -11,9 +11,10 @@ import { ListEmpty } from "@/components/ListEmpty";
 import { Button } from "@/components/Button";
 import { useRoute } from "@react-navigation/native";
 import { AppError } from "@/utils/AppError";
-import { playerAddByGroup } from "@/storage/player/playerAddByGroup";
+import { addPlayerByGroup } from "@/storage/player/addPlayerByGroup";
 import { playersGetByGroupAndTeam } from "@/storage/player/playersGetByGroupAndTeam";
 import { PlayerStorageDTO } from "@/storage/player/PlayerStorageDTO";
+import { removePlayerByGroup } from "@/storage/player/removePlayerByGroup";
 
 interface RouteParams {
   group: string;
@@ -47,7 +48,7 @@ export const Players = () => {
     };
 
     try {
-      await playerAddByGroup(newPlayer, group);
+      await addPlayerByGroup(newPlayer, group);
 
       newPlayerNameInputRef.current?.blur();
       Keyboard.dismiss(); // fecha o teclado
@@ -77,6 +78,20 @@ export const Players = () => {
       Alert.alert(
         "Pessoas",
         "Nao foi possivel carregar as pessoas filtradas do time selecionado."
+      );
+    }
+  };
+
+  const handleRemovePlayer = async (playerName: string) => {
+    try {
+      await removePlayerByGroup(playerName, group);
+
+      fetchPlayersByTeam();
+    } catch (error) {
+      console.log(error);
+      Alert.alert(
+        "Remover pessoas",
+        "Nao foi possivel remover a pessoa selecionada."
       );
     }
   };
@@ -125,7 +140,10 @@ export const Players = () => {
         data={players}
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
-          <PlayerCard name={item.name} onRemove={() => {}} />
+          <PlayerCard
+            name={item.name}
+            onRemove={() => handleRemovePlayer(item.name)}
+          />
         )}
         ListEmptyComponent={() => (
           <ListEmpty message="Não há pessoas nesse time" />
