@@ -1,6 +1,5 @@
 import React from "react";
-import { Container, Icon } from "./styles";
-import { Title } from "../HighLight/styles";
+import { Container, Icon, Title } from "./styles";
 import { TouchableOpacityProps } from "react-native";
 
 interface GroupCardProps extends TouchableOpacityProps {

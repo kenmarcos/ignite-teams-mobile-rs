@@ -1,7 +1,6 @@
 import React from "react";
-import { Container, FilterStyleProps } from "./styles";
+import { Container, FilterStyleProps, Title } from "./styles";
 import { TouchableOpacityProps } from "react-native";
-import { Title } from "../HighLight/styles";
 
 interface FilterProps extends TouchableOpacityProps, FilterStyleProps {
   title: string;

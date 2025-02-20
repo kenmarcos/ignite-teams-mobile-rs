@@ -21,7 +21,6 @@ export const Title = styled.Text`
     font-family: ${theme.FONT_FAMILY.REGULAR};
   `}
   flex: 1;
-  text-align: center;
 `;
 
 export const Icon = styled(UsersThree).attrs(({ theme }) => ({
