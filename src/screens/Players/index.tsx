@@ -9,12 +9,13 @@ import { useEffect, useRef, useState } from "react";
 import { PlayerCard } from "@/components/PlayerCard";
 import { ListEmpty } from "@/components/ListEmpty";
 import { Button } from "@/components/Button";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { AppError } from "@/utils/AppError";
 import { addPlayerByGroup } from "@/storage/player/addPlayerByGroup";
 import { playersGetByGroupAndTeam } from "@/storage/player/playersGetByGroupAndTeam";
 import { PlayerStorageDTO } from "@/storage/player/PlayerStorageDTO";
 import { removePlayerByGroup } from "@/storage/player/removePlayerByGroup";
+import { removeGroup } from "@/storage/group/removeGroup";
 
 interface RouteParams {
   group: string;
@@ -27,6 +28,7 @@ export const Players = () => {
   const newPlayerNameInputRef = useRef<TextInput>(null);
 
   const route = useRoute();
+  const navigation = useNavigation();
 
   const { group } = route.params as RouteParams;
 
@@ -96,6 +98,24 @@ export const Players = () => {
     }
   };
 
+  const onRemoveGroup = async () => {
+    try {
+      await removeGroup(group);
+
+      navigation.navigate("groups");
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Remover turma", "Nao foi possivel remover a turma.");
+    }
+  };
+
+  const handleRemoveGroup = async () => {
+    Alert.alert("Remover turma", "Deseja remover a turma?", [
+      { text: "Não", style: "cancel" },
+      { text: "Sim", onPress: onRemoveGroup },
+    ]);
+  };
+
   useEffect(() => {
     fetchPlayersByTeam();
   }, [team]);
@@ -155,7 +175,11 @@ export const Players = () => {
         ]}
       />
 
-      <Button title="Remover turma" type="SECONDARY" />
+      <Button
+        title="Remover turma"
+        type="SECONDARY"
+        onPress={handleRemoveGroup}
+      />
     </Container>
   );
 };

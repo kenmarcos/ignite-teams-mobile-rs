@@ -3,11 +3,11 @@ import { Container } from "./styles";
 import { HighLight } from "@/components/HighLight";
 import { GroupCard } from "@/components/GroupCard";
 import { useCallback, useState } from "react";
-import { FlatList } from "react-native";
+import { Alert, FlatList } from "react-native";
 import { ListEmpty } from "@/components/ListEmpty";
 import { Button } from "@/components/Button";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { groupsGetAll } from "@/storage/group/groupsGetAll";
+import { fetchGroups } from "@/storage/group/fetchGroups";
 
 export function Groups() {
   const [groups, setGroups] = useState(["Galera da Rocketseat"]);
@@ -17,12 +17,13 @@ export function Groups() {
     navigation.navigate("new");
   };
 
-  const fetchGroups = async () => {
+  const fetchAllGroups = async () => {
     try {
-      const data = await groupsGetAll();
+      const data = await fetchGroups();
       setGroups(data);
     } catch (error) {
       console.log(error);
+      Alert.alert("Turmas", "Nao foi possivel carregar as turmas.");
     }
   };
 
@@ -32,7 +33,7 @@ export function Groups() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchGroups();
+      fetchAllGroups();
     }, [])
   );
 
